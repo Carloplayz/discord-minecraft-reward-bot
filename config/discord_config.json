@@ -1,0 +1,9 @@
+{
+    "bot_token": "YOUR_BOT_TOKEN",
+    "guildId": "GUILD_OR_SERVER_ID",
+    "adminRoleId": "ADMIN_ROLE_ID",
+    "allowedChannelId": "ALLOWED_CHANNEL_ID",
+    "onlyAllowedInChannel": "true",
+    "logChannelId": "LOG_CHANNEL_ID",
+    "logging": "true"
+}

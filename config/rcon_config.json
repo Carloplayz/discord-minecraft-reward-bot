@@ -1,0 +1,5 @@
+{
+    "host": "RCON_IP",
+    "port": "RCON_PORT",
+    "password": "RCON_PASSWORD"
+}
