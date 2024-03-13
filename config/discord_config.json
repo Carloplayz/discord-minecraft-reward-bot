@@ -4,6 +4,5 @@
     "adminRoleId": "ADMIN_ROLE_ID",
     "allowedChannelId": "ALLOWED_CHANNEL_ID",
     "onlyAllowedInChannel": "true",
-    "logChannelId": "LOG_CHANNEL_ID",
-    "logging": "true"
+    "logChannelId": "LOG_CHANNEL_ID"
 }

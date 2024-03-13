@@ -30,11 +30,10 @@ const weeklyprefix = config.weeklyprefix;
 const weeklysuffix = config.weeklysuffix;
 const monthlyprefix = config.monthlyprefix;
 const monthlysuffix = config.monthlysuffix;
-const logging = config.logging;
 const allow = config.onlyAllowedInChannel;
 const cooldownTime = 72 * 60 * 60 * 1000;
 
-if ((logging !== 'true' && logging !== 'false') || (allow !== 'true' && allow !== 'false')){
+if (allow !== 'true' && allow !== 'false'){
   console.log('error in discord_config file');
   console.log('Exiting...');
   setTimeout(() => {
@@ -65,7 +64,7 @@ client.on('interactionCreate', async (interaction) => {
   const { commandName, member, options, guild, channel } = interaction; // Define 'member' here
   const discordId = member.id; // Use 'member' instead of 'member.id'
 
-  if (channel.id !== allowedChannelId) {
+  if (channel.id !== allowedChannelId && allow === 'true') {
     const allowedChannel = guild.channels.cache.get(allowedChannelId);
     await interaction.reply({ content: `Commands can only be used in ${allowedChannel}.`, ephemeral: true });
     return;
@@ -429,7 +428,7 @@ function removeColorCodes(input) {
   return input.replace(/§[0-9a-fklmnor]/g, '');
 }
 
-function deleteDataFromDatabase(discordIds, interaction) {
+function deleteDataFromDatabase(discordIds, interaction, logChannelId) {
   // Implement logic to delete data from the database based on Discord IDs
   const query = "DELETE FROM users WHERE discord_id IN (?)";
   db.query(query, [discordIds], (error, results) => {
@@ -439,11 +438,19 @@ function deleteDataFromDatabase(discordIds, interaction) {
     } else {
       const affectedRows = results.affectedRows || 0;
       interaction.reply({ content: `Successfully deleted ${affectedRows} record(s) from the database.`, ephemeral: true });
+      
+      // Log the delete data action in the log channel
+      const logChannel = interaction.guild.channels.cache.get(logChannelId);
+      if (logChannel) {
+        logChannel.send(`Deleted ${affectedRows} record(s) from the database.`);
+      } else {
+        console.error("Log channel not found.");
+      }
     }
   });
 }
 
-function resetDatabase(interaction) {
+function resetDatabase(interaction, logChannelId) {
   // Implement logic to reset the entire database
   db.query("DELETE FROM users", (error, results) => {
     if (error) {
@@ -452,11 +459,19 @@ function resetDatabase(interaction) {
     } else {
       const affectedRows = results.affectedRows || 0;
       interaction.reply({ content: `Successfully cleared ${affectedRows} record(s) from the database.`, ephemeral: true });
+      
+      // Log the reset database action in the log channel
+      const logChannel = interaction.guild.channels.cache.get(logChannelId);
+      if (logChannel) {
+        logChannel.send(`Reset the entire database. Cleared ${affectedRows} record(s) from the database.`);
+      } else {
+        console.error("Log channel not found.");
+      }
     }
   });
 }
 
-async function resetCooldown(targetDiscordId, cooldownType, interaction) {
+async function resetCooldown(targetDiscordId, cooldownType, interaction, logChannelId) {
   try {
     if (['daily', 'weekly', 'monthly'].includes(cooldownType)) {
       const cooldownColumn = `last_${cooldownType}_claim`;
@@ -468,6 +483,14 @@ async function resetCooldown(targetDiscordId, cooldownType, interaction) {
             return;
           }
           await interaction.reply({ content: `${cooldownType} cooldown reset for user with Discord ID ${targetDiscordId}.`, ephemeral: true });
+          
+          // Log the reset daily cooldown action in the log channel
+          const logChannel = interaction.guild.channels.cache.get(logChannelId);
+          if (logChannel) {
+            logChannel.send(`${cooldownType} cooldown reset for user <@${targetDiscordId}>.`);
+          } else {
+            console.error("Log channel not found.");
+          }
         });
       }
       else {
@@ -478,6 +501,14 @@ async function resetCooldown(targetDiscordId, cooldownType, interaction) {
             return;
           }
           await interaction.reply({ content: `${cooldownType} cooldown reset for user with Discord ID ${targetDiscordId}.`, ephemeral: true });
+          
+          // Log the reset weekly or monthly cooldown action in the log channel
+          const logChannel = interaction.guild.channels.cache.get(logChannelId);
+          if (logChannel) {
+            logChannel.send(`${cooldownType} cooldown reset for user with Discord ID ${targetDiscordId}.`);
+          } else {
+            console.error("Log channel not found.");
+          }
         });
       }
     } else {
