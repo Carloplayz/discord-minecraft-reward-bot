@@ -113,6 +113,7 @@ client.once('ready', async () => {
         {
             name: 'deldata',
             description: 'Remove user data from the database',
+            defaultPermission: false, // Set default permission to false
             options: [
                 {
                     name: 'discord_id',
@@ -125,10 +126,12 @@ client.once('ready', async () => {
         {
             name: 'resetdatabase',
             description: 'Clear the entire database',
+            defaultPermission: false, // Set default permission to false
         },
         {
             name: 'resetcooldown',
             description: 'Reset the cooldown for a specific user',
+            defaultPermission: false, // Set default permission to false
             options: [
                 {
                     name: 'discord_id',
