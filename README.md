@@ -95,7 +95,6 @@ Discord Reward Bot, developed by carlo_playz, is designed to manage daily, weekl
     *Usage:* `/deldata [discord_id]`
     
     *Parameters:*
-    
         `discord_id`: Discord ID(s) to delete from the database.
         
     *Example:* `/deldata 1234567890`
@@ -119,9 +118,7 @@ Discord Reward Bot, developed by carlo_playz, is designed to manage daily, weekl
     *Usage:* `/resetcooldown [discord_id] [cooldown_type]`
     
     *Parameters:*
-    
         `discord_id`: The Discord ID of the user whose cooldown will be reset.
-        
         `cooldown_type`: The type of cooldown to reset (daily, weekly, monthly).
         
     *Example:* `/resetcooldown 1234567890 daily`
